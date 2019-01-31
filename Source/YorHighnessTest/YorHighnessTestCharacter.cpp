@@ -8,6 +8,7 @@
 #include "Classes/GameFramework/Actor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "public/PickUpObject.h"
 #include "Classes/GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -161,13 +162,19 @@ FHitResult AYorHighnessTestCharacter::FindObjectUnderCursor()//TODO proteggere H
 void AYorHighnessTestCharacter::PickUp()
 {
 	auto MyController = GetWorld()->GetFirstPlayerController();
-	AActor* Actor = FindObjectUnderCursor().GetActor();
-	Actor->Destroy();
-	if (MyController)
-		MyController->CurrentMouseCursor = EMouseCursor::Crosshairs;
-	else
+	APickUpObject* Actor = Cast<APickUpObject>(FindObjectUnderCursor().GetActor());
+	if (Actor != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("no controller!!!!!"))
+		Actor->Destroy();
+
+		ObjectHeld = Actor;
+
+		if (MyController)
+			MyController->CurrentMouseCursor = EMouseCursor::Crosshairs;
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("no controller!!!!!"))
+		}
 	}
 }
 
@@ -177,4 +184,18 @@ void AYorHighnessTestCharacter::ChangeCursor()
 	auto MyController = GetWorld()->GetFirstPlayerController();
 	if (MyController)
 		MyController->CurrentMouseCursor = EMouseCursor::Default;
+}
+float AYorHighnessTestCharacter::GetHealth()
+{
+	return Health;
+}
+
+APickUpObject* AYorHighnessTestCharacter::GetObjectHeld()
+{
+	return ObjectHeld;
+}
+
+void AYorHighnessTestCharacter::ResetObjectHeld()
+{
+	ObjectHeld = nullptr;
 }

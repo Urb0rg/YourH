@@ -29,6 +29,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UFUNCTION(BlueprintCallable)
+		float GetHealth();
+	UFUNCTION(BlueprintCallable)
+		class APickUpObject* GetObjectHeld();
+	UFUNCTION(BlueprintCallable)
+		void ResetObjectHeld();
+
+
 	virtual void Tick(float DeltaTime)override;
 
 	
@@ -78,5 +86,7 @@ public:
 private:
 	FHitResult FindObjectUnderCursor();
 	void PickUp();
+	class APickUpObject* ObjectHeld = nullptr;
+	float Health = 1.f;
 };
 
