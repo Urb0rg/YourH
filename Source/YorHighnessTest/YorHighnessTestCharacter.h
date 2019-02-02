@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "YorHighnessTestCharacter.generated.h"
 
+
+
 UCLASS(config=Game)
 class AYorHighnessTestCharacter : public ACharacter
 {
@@ -35,6 +37,8 @@ public:
 		class APickUpObject* GetObjectHeld();
 	UFUNCTION(BlueprintCallable)
 		void ResetObjectHeld();
+	UFUNCTION(BlueprintCallable)
+		bool PickUp();
 
 
 	virtual void Tick(float DeltaTime)override;
@@ -85,7 +89,7 @@ public:
 
 private:
 	FHitResult FindObjectUnderCursor();
-	void PickUp();
+	
 	class APickUpObject* ObjectHeld = nullptr;
 	float Health = 1.f;
 };

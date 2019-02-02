@@ -77,8 +77,7 @@ void AYorHighnessTestCharacter::SetupPlayerInputComponent(class UInputComponent*
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AYorHighnessTestCharacter::OnResetVR);
-
-	PlayerInputComponent->BindAction("prendi", IE_Pressed, this, &AYorHighnessTestCharacter::PickUp);
+	
 }
 
 
@@ -159,23 +158,30 @@ FHitResult AYorHighnessTestCharacter::FindObjectUnderCursor()//TODO proteggere H
 			
 }
 
-void AYorHighnessTestCharacter::PickUp()
+bool AYorHighnessTestCharacter::PickUp()
 {
 	auto MyController = GetWorld()->GetFirstPlayerController();
 	APickUpObject* Actor = Cast<APickUpObject>(FindObjectUnderCursor().GetActor());
 	if (Actor != nullptr)
 	{
+	FVector DistanceVector = (Actor->GetActorLocation()) - (GetActorLocation());
+	float ObjectDistance = DistanceVector.Size();
+	if (ObjectDistance > 400.f) { return false; }
+	
+	
 		Actor->Destroy();
 
 		ObjectHeld = Actor;
 
-		if (MyController)
+		//if (MyController)
 			MyController->CurrentMouseCursor = EMouseCursor::Crosshairs;
-		else
+		/*else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("no controller!!!!!"))
-		}
+			UE_LOG(LogTemp, Warning, TEXT("no controller!!!!!")) return false;
+		}*/
+			return true;
 	}
+	return true;
 }
 
 void AYorHighnessTestCharacter::ChangeCursor()
@@ -185,6 +191,7 @@ void AYorHighnessTestCharacter::ChangeCursor()
 	if (MyController)
 		MyController->CurrentMouseCursor = EMouseCursor::Default;
 }
+
 float AYorHighnessTestCharacter::GetHealth()
 {
 	return Health;
@@ -199,3 +206,4 @@ void AYorHighnessTestCharacter::ResetObjectHeld()
 {
 	ObjectHeld = nullptr;
 }
+
